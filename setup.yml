@@ -7,6 +7,8 @@
   tasks:
   - name: write custom bash config
     template: src=./dot-files/bashrc.j2 dest=/home/vagrant/.bashrc
+  - name: write custom tmux config
+    template: src=./dot-files/tmux.conf.j2 dest=/home/vagrant/.tmux.conf
   - name: Creates private bin directory
     file: path=/home/vagrant/bin state=directory
   - name: Creates private lib directory

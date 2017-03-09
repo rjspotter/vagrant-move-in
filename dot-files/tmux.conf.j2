@@ -1,0 +1,9 @@
+unbind-key C-b
+set -g prefix 'C-\'
+bind-key 'C-\' send-prefix
+
+unbind ,
+unbind f
+
+bind-key A command-prompt 'rename-window %%'
+bind-key "'" command-prompt -I "#W" "find-window '%%'"
