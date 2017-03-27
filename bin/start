@@ -1,0 +1,20 @@
+#!/bin/bash
+
+systemctl --user enable atcms-webpack.service
+systemctl --user enable atcms-unicorn.service
+systemctl --user enable atcms-console.service
+systemctl --user enable atcms-sidekiq.service
+systemctl --user enable community-unicorn.service
+systemctl --user enable community-console.service
+systemctl --user enable community-sidekiq.service
+
+systemctl --user start atcms-webpack.service
+systemctl --user start atcms-unicorn.service
+systemctl --user start atcms-console.service
+systemctl --user start atcms-sidekiq.service
+systemctl --user start community-unicorn.service
+systemctl --user start community-console.service
+systemctl --user start community-sidekiq.service
+
+sudo systemctl restart nginx
+sudo systemctl restart varnish

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+systemctl --user stop atcms-webpack.service
+systemctl --user stop atcms-unicorn.service
+systemctl --user stop atcms-console.service
+systemctl --user stop atcms-sidekiq.service
+systemctl --user stop community-unicorn.service
+systemctl --user stop community-console.service
+systemctl --user stop community-sidekiq.service
+
+sudo systemctl restart nginx
+sudo systemctl restart varnish

@@ -17,6 +17,10 @@
     file: path=/home/vagrant/lib state=directory
   - name: import psg
     template: src=./bin/psg dest=/home/vagrant/bin/psg
+  - name: import start
+    template: src=./bin/start dest=/home/vagrant/bin/start
+  - name: import stop
+    template: src=./bin/stop dest=/home/vagrant/bin/stop
   - name: Install base packages
     apt: name={{item}} state=latest
     with_items:
