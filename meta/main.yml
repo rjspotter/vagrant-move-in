@@ -1,0 +1,17 @@
+---
+dependencies: []
+
+galaxy_info:
+  author: rjspotter
+  description: move in script
+  company: "Intentionally Blank Inc"
+  license: "license (MIT)"
+  min_ansible_version: 1.9
+  platforms:
+    - name: Ubuntu
+      versions:
+      - xenial
+  galaxy_tags:
+    - development
+
+allow_duplicates: yes
