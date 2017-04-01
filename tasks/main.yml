@@ -1,0 +1,41 @@
+---
+- name: write custom bash config
+  template: src=bashrc.j2 dest=/home/vagrant/.bashrc
+- name: write custom tmux config
+  template: src=tmux.conf.j2 dest=/home/vagrant/.tmux.conf
+- name: write custom git config
+  template: src=gitconfig.j2 dest=/home/vagrant/.gitconfig
+- name: Creates private bin directory
+  file: path=/home/{{ user_name }}/bin state=directory
+- name: Creates private lib directory
+  file: path=/home/{{ user_name }}/lib state=directory
+- name: import psg
+  template: src=psg dest=/home/vagrant/bin/psg mode=0755
+- name: Install base packages
+  apt: name={{item}} state=latest
+  with_items:
+    - tmux
+    - texinfo
+    - libncurses5-dev
+    - build-essential
+    - automake
+    - autoconf
+  sudo: yes
+- name: get emacs 25 source
+  git:
+    repo: https://github.com/emacs-mirror/emacs.git
+    dest: /home/vagrant/lib/emacs
+    version: emacs-25
+- name: build emacs 25
+  shell: cd /home/vagrant/lib/emacs && ./autogen.sh && ./configure && make && sudo make install
+- name: checkout my emacs config
+  git:
+    repo: https://github.com/rjspotter/emacs_config.git
+    dest: /home/vagrant/.emacs.d
+- name: symlink code
+  file:
+    src: /vagrant
+    dest: /home/vagrant/code
+    owner: vagrant
+    group: vagrant
+    state: link

@@ -1,0 +1,4 @@
+---
+- project_name: vagrant_dev
+- user_name: vagrant
+- remote_user: vagrant
