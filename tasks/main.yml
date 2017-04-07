@@ -20,7 +20,7 @@
     - build-essential
     - automake
     - autoconf
-  sudo: yes
+  become: true
 - name: get emacs 25 source
   git:
     repo: https://github.com/emacs-mirror/emacs.git
