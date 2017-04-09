@@ -1,16 +1,20 @@
 ---
 - name: write custom bash config
-  template: src=bashrc.j2 dest=/home/vagrant/.bashrc
+  template: src=bashrc.j2 dest=/home/{{ user_name }}/.bashrc
 - name: write custom tmux config
-  template: src=tmux.conf.j2 dest=/home/vagrant/.tmux.conf
+  template: src=tmux.conf.j2 dest=/home/{{ user_name }}/.tmux.conf
 - name: write custom git config
-  template: src=gitconfig.j2 dest=/home/vagrant/.gitconfig
+  template: src=gitconfig.j2 dest=/home/{{ user_name }}/.gitconfig
 - name: Creates private bin directory
   file: path=/home/{{ user_name }}/bin state=directory
 - name: Creates private lib directory
   file: path=/home/{{ user_name }}/lib state=directory
+- name: Creates lein config dir
+  file: path=/home/{{ user_name }}/.lein state=directory
+- name: import lien profile
+  template: src=lein_profiles dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744
 - name: import psg
-  template: src=psg dest=/home/vagrant/bin/psg mode=0755
+  template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755
 - name: Install base packages
   apt: name={{item}} state=latest
   with_items:
@@ -24,18 +28,18 @@
 - name: get emacs 25 source
   git:
     repo: https://github.com/emacs-mirror/emacs.git
-    dest: /home/vagrant/lib/emacs
+    dest: /home/{{ user_name }}/lib/emacs
     version: emacs-25
 - name: build emacs 25
-  shell: cd /home/vagrant/lib/emacs && ./autogen.sh && ./configure && make && sudo make install
+  shell: cd /home/{{ user_name }}/lib/emacs && ./autogen.sh && ./configure && make && sudo make install
 - name: checkout my emacs config
   git:
     repo: https://github.com/rjspotter/emacs_config.git
-    dest: /home/vagrant/.emacs.d
+    dest: /home/{{ user_name }}/.emacs.d
 - name: symlink code
   file:
     src: /vagrant
-    dest: /home/vagrant/code
+    dest: /home/{{ user_name }}/code
     owner: vagrant
     group: vagrant
     state: link
