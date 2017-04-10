@@ -12,7 +12,7 @@
 - name: Creates lein config dir
   file: path=/home/{{ user_name }}/.lein state=directory
 - name: import lien profile
-  template: src=lein_profiles dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744
+  template: src=lein_profiles.j2 dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744
 - name: import psg
   template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755
 - name: Install base packages
@@ -43,3 +43,4 @@
     owner: vagrant
     group: vagrant
     state: link
+  ignore_errors: true
