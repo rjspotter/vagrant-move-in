@@ -32,7 +32,8 @@
     version: emacs-25
   become: false
 - name: build emacs 25
-  shell: cd /home/{{ user_name }}/lib/emacs && ./autogen.sh && ./configure && make && sudo make install
+  shell: cd /home/{{ user_name }}/lib/emacs && ./autogen.sh && ./configure && make && sudo make install && make clean
+  become: false
 - name: checkout my emacs config
   git:
     repo: https://github.com/rjspotter/emacs_config.git
