@@ -13,6 +13,11 @@
   file: path=/home/{{ user_name }}/.lein state=directory owner={{ user_name }}
 - name: import lien profile
   template: src=lein_profiles.j2 dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744 owner={{ user_name }}
+- name: setup personal bindir
+  file:
+    path: /home/{{ user_name }}/bin
+    state: directory
+  become: false
 - name: import psg
   template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755 owner={{ user_name }}
 - name: Install base packages
@@ -31,7 +36,7 @@
     dest: ~/emacs
     version: emacs-25
 - name: build emacs 25
-  shell: cd ~/emacs && ./autogen.sh && ./configure && make && sudo make install && make clean
+  shell: cd ~/emacs && ./autogen.sh && ./configure --without-x && make && sudo make install && make clean
 - name: checkout my emacs config
   git:
     repo: https://github.com/rjspotter/emacs_config.git
