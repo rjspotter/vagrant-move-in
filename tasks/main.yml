@@ -46,8 +46,8 @@
   file:
     src: /vagrant
     dest: /home/{{ user_name }}/code
-    owner: {{ user_name }}
-    group: {{ user_name }}
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
     state: link
   ignore_errors: true
   become: false
