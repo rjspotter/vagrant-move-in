@@ -29,6 +29,7 @@
     - build-essential
     - automake
     - autoconf
+    - git
   become: true
 - name: get emacs 25 source
   git:

@@ -125,7 +125,8 @@ fi
 parse_git_branch() {
   git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' 
 }
-PS1="\ncwd: \w \$(parse_git_branch) \n[{{ project_name }}]$ "
+#PS1="\ncwd: \w \$(parse_git_branch) \n[{{ project_name }}]$ "
+PS1="\n\u@\h:\w \$(parse_git_branch) \n ->> "
 PS2=""
 export PS1
 export EDITOR="TERM=xterm-256color emacs -nw "
