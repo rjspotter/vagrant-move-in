@@ -30,6 +30,7 @@
     - automake
     - autoconf
     - git
+    - meld
   become: true
 - name: get emacs 25 source
   git:
@@ -53,3 +54,11 @@
   ignore_errors: true
   become: false
   when: vagrant_use_sync
+- name: otherwise make code dir
+  file:
+    path: /home/{{ user_name }}/code
+    state: directory
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    mode: 0644
+  when: not vagrant_use_sync
