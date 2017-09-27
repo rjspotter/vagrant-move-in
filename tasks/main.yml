@@ -1,25 +1,29 @@
 ---
+- name: setup personal directories
+  file:
+    path: /home/{{ user_name }}/{{ item }}
+    state: directory
+    owner: "{{ user_name }}"
+  with_items:
+    - bin
+    - tmp
+    - lib
+    - ".lein"
+  become: false
+
 - name: write custom bash config
   template: src=bashrc.j2 dest=/home/{{ user_name }}/.bashrc owner={{ user_name }}
 - name: write custom tmux config
   template: src=tmux.conf.j2 dest=/home/{{ user_name }}/.tmux.conf owner={{ user_name }}
 - name: write custom git config
   template: src=gitconfig.j2 dest=/home/{{ user_name }}/.gitconfig owner={{ user_name }}
-- name: Creates private bin directory
-  file: path=/home/{{ user_name }}/bin state=directory owner={{ user_name }}
-- name: Creates private lib directory
-  file: path=/home/{{ user_name }}/lib state=directory owner={{ user_name }}
-- name: Creates lein config dir
-  file: path=/home/{{ user_name }}/.lein state=directory owner={{ user_name }}
+
 - name: import lien profile
   template: src=lein_profiles.j2 dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744 owner={{ user_name }}
-- name: setup personal bindir
-  file:
-    path: /home/{{ user_name }}/bin
-    state: directory
-  become: false
+
 - name: import psg
   template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755 owner={{ user_name }}
+
 - name: Install base packages
   apt: name={{item}} state=latest
   with_items:
@@ -31,19 +35,24 @@
     - autoconf
     - git
     - meld
+    - fish
   become: true
+
 - name: get emacs 25 source
   git:
     repo: https://github.com/emacs-mirror/emacs.git
     dest: ~/emacs
     version: emacs-25
+
 - name: build emacs 25
   shell: cd ~/emacs && ./autogen.sh && ./configure --without-x && make && sudo make install && make clean
+
 - name: checkout my emacs config
   git:
     repo: https://github.com/rjspotter/emacs_config.git
     dest: /home/{{ user_name }}/.emacs.d
   become: false
+
 - name: symlink code
   file:
     src: /vagrant
@@ -54,6 +63,7 @@
   ignore_errors: true
   become: false
   when: vagrant_use_sync
+
 - name: otherwise make code dir
   file:
     path: /home/{{ user_name }}/code
@@ -62,3 +72,24 @@
     group: "{{ user_name }}"
     mode: 0644
   when: not vagrant_use_sync
+
+- name: Install base packages
+  file:
+    path: /home/{{ user_name }}/tmp/scratch.{{ item }}
+    state: touch
+    mode: "u=rw,g=r,o=r"
+  with_items:
+    - ex
+    - rb
+    - txt
+    - json
+    - js
+    - html
+
+- name: setup ssh login
+  lineinfile:
+#    path: /etc/selinux/config
+    dest: /home/{{ user_name }}/.ssh/authorized_keys
+    regexp: 'rjspotter@wheatley'
+    line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCduUqawkxXPozz9dQ7CxZVILcbA0WDmcf+WEipriIOqfc1xxRC9u2bn9MTG0apwUX1Hv4L9G3heJfsiijCpZ7qbEAsMYcwOPxIN/ecfLTA1m9KEWSesv6f0BMWaFRtMXpvuJI8fbYlLkqmHYVkczqaEVgjsuoUbWLa6644yoYDwvrxlTVRfDrZe1MvUxjHQXkpGEr/F70ltHqzke8FCr3FmEl209fjMy6Z5Ewisx7zgqiWAzoTPcsqCPGD0KCu9OrdYdr+CWGpbEzh9kVluKJdiAUwqe7OY9g2D9h8lvPXJGhqI7YcBKl8KnaxloLkqPNX9++gkIGo/iZTG/jGQxX3 rjspotter@wheatley
+'
