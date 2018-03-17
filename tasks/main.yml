@@ -4,6 +4,8 @@
     path: /home/{{ user_name }}/{{ item }}
     state: directory
     owner: "{{ user_name }}"
+    group: "{{ user_name }}"
+    recurse: true
   with_items:
     - bin
     - tmp
@@ -73,10 +75,12 @@
     mode: 0644
   when: not vagrant_use_sync
 
-- name: Install base packages
+- name: Install handy scratch files
   file:
     path: /home/{{ user_name }}/tmp/scratch.{{ item }}
     state: touch
+    owner: "{{ user_name }}"
+    group: "{{ user_name }}"
     mode: "u=rw,g=r,o=r"
   with_items:
     - ex
