@@ -32,6 +32,7 @@
     - tmux
     - texinfo
     - libncurses5-dev
+    - libgnutls28-dev
     - build-essential
     - automake
     - autoconf
@@ -40,13 +41,17 @@
     - fish
   become: true
 
-- name: get emacs 25 source
+- name: Install ripgrep
+  apt:
+    deb: https://github.com/BurntSushi/ripgrep/releases/download/0.9.0/ripgrep_0.9.0_amd64.deb
+
+- name: get emacs 26 source
   git:
     repo: https://github.com/emacs-mirror/emacs.git
     dest: ~/emacs
-    version: emacs-25
+    version: emacs-26
 
-- name: build emacs 25
+- name: build emacs 26
   shell: cd ~/emacs && ./autogen.sh && ./configure --without-x && make && sudo make install && make clean
 
 - name: checkout my emacs config
@@ -97,3 +102,9 @@
     regexp: 'rjspotter@wheatley'
     line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCduUqawkxXPozz9dQ7CxZVILcbA0WDmcf+WEipriIOqfc1xxRC9u2bn9MTG0apwUX1Hv4L9G3heJfsiijCpZ7qbEAsMYcwOPxIN/ecfLTA1m9KEWSesv6f0BMWaFRtMXpvuJI8fbYlLkqmHYVkczqaEVgjsuoUbWLa6644yoYDwvrxlTVRfDrZe1MvUxjHQXkpGEr/F70ltHqzke8FCr3FmEl209fjMy6Z5Ewisx7zgqiWAzoTPcsqCPGD0KCu9OrdYdr+CWGpbEzh9kVluKJdiAUwqe7OY9g2D9h8lvPXJGhqI7YcBKl8KnaxloLkqPNX9++gkIGo/iZTG/jGQxX3 rjspotter@wheatley
 '
+
+- name: ensure ownage
+  shell: chown -R {{ user_name}} /home/{{ user_name }}
+
+- name: ensure groupage
+  shell: chgrp -R {{ user_name}} /home/{{ user_name }}
