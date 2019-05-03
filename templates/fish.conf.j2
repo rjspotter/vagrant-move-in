@@ -1,0 +1,43 @@
+function parse_git_branch
+    git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'
+end
+
+function fish_prompt
+    set_color normal
+    echo (whoami)(set_color normal)@(hostname):(pwd) (parse_git_branch)
+    set_color 0C0
+    echo -n " ->> "
+    set_color DDD
+end
+
+function fish_title
+    true
+end
+
+set -gx EDITOR "emacsclient -t"
+set -gx TERM "xterm-256color"
+set -gx PATH /home/ubuntu/bin ./bin $PATH
+
+alias g='git'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gstat='git status'
+alias gc='git commit -v'
+alias gca='git commit -v -a'
+alias gd='git diff | mate'
+alias gl='git pull'
+alias gp='git push'
+alias glog="git log --all --graph --pretty=format:'%Cred%h%Creset -%C(magenta)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative"
+
+alias bi='bundle install'
+alias be='bundle exec'
+alias rc='bundle exec rails console'
+alias uni='bundle exec unicorn'
+
+alias gir='grep -irn'
+
+alias gqview='geeqie'
+
+alias te="emacsclient -t"
+
+alias attach='tmux -2 attach -t '
