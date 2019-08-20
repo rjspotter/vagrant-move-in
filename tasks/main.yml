@@ -18,16 +18,19 @@
 - apt_key:
     url: https://deb.opera.com/archive.key
     state: present
+  become: true
 
 - apt_repository:
     repo: deb https://deb.opera.com/opera-stable/ stable non-free
     state: present
     update_cache: yes
+  become: true
 
 - apt_repository:
     repo: deb http://archive.canonical.com/ubuntu bionic partner
     state: present
     update_cache: yes
+  become: true
 
 - name: Install base packages
   apt:
@@ -36,10 +39,11 @@
     update_cache: yes
     install_recommends: yes
   with_items:
-    - tmux
-    - texinfo
+    - libgstreamer1.0-dev
     - libncurses5-dev
     - libgnutls28-dev
+    - tmux
+    - texinfo
     - build-essential
     - automake
     - autoconf
@@ -52,15 +56,18 @@
 - name: Install ripgrep
   apt:
     deb: https://github.com/BurntSushi/ripgrep/releases/download/0.9.0/ripgrep_0.9.0_amd64.deb
+  become: true
 
 - name: get emacs 26 source
   git:
     repo: https://github.com/emacs-mirror/emacs.git
     dest: ~/emacs
     version: emacs-26
+  become: false
 
 - name: build emacs 26
   shell: cd ~/emacs && ./autogen.sh && ./configure --without-x && make && sudo make install && make clean
+  become: false
 
 - name: checkout my emacs config
   git:
@@ -73,8 +80,10 @@
 
 - name: write custom fish config
   template: src=fish.conf.j2 dest=/home/{{ user_name }}/.config/fish/config.fish owner={{ user_name }}
+
 - name: write custom tmux config
   template: src=tmux.conf.j2 dest=/home/{{ user_name }}/.tmux.conf owner={{ user_name }}
+
 - name: write custom git config
   template: src=gitconfig.j2 dest=/home/{{ user_name }}/.gitconfig owner={{ user_name }}
 
