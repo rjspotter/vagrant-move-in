@@ -3,13 +3,15 @@
   file:
     path: /home/{{ user_name }}/{{ item }}
     state: directory
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
+    # owner: "{{user_name}}"
+    # group: "{{user_name}}"
     recurse: true
+    mode: 0777
   with_items:
     - bin
     - tmp
     - lib
+    - code
     - ".lein"
     - ".config/fish"
     - Downloads
@@ -93,26 +95,6 @@
 - name: import psg
   template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755 owner={{ user_name }}
 
-- name: symlink code
-  file:
-    src: /vagrant
-    dest: /home/{{ user_name }}/code
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
-    state: link
-  ignore_errors: true
-  become: false
-  when: vagrant_use_sync
-
-- name: otherwise make code dir
-  file:
-    path: /home/{{ user_name }}/code
-    state: directory
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
-    mode: 0644
-  when: not vagrant_use_sync
-
 - name: Install handy scratch files
   file:
     path: /home/{{ user_name }}/tmp/scratch.{{ item }}
@@ -129,6 +111,10 @@
     - html
     - ts
     - jl
+    - scala
+    - css
+    - sass
+  become: false
 
 - name: setup ssh login
   lineinfile:
