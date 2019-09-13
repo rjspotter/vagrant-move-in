@@ -1,10 +1,10 @@
 ---
 - name: setup personal directories
   file:
-    path: /home/{{ user_name }}/{{ item }}
+    path: /home/{{ remote_user }}/{{ item }}
     state: directory
-    # owner: "{{user_name}}"
-    # group: "{{user_name}}"
+    # owner: "{{remote_user}}"
+    # group: "{{remote_user}}"
     recurse: true
     mode: 0777
   with_items:
@@ -36,23 +36,10 @@
 
 - name: Install base packages
   apt:
-    name: "{{ item }}"
+    name: [libgstreamer1.0-dev, libncurses5-dev, libgnutls28-dev, tmux, texinfo, build-essential, automake, autoconf, git, meld, fish]
     state: latest
     update_cache: yes
     install_recommends: yes
-  with_items:
-    - libgstreamer1.0-dev
-    - libncurses5-dev
-    - libgnutls28-dev
-    - tmux
-    - texinfo
-    - build-essential
-    - automake
-    - autoconf
-    - git
-    - meld
-    - fish
-    # - opera
   become: true
 
 - name: Install ripgrep
@@ -74,33 +61,33 @@
 - name: checkout my emacs config
   git:
     repo: https://github.com/rjspotter/emacs_config.git
-    dest: /home/{{ user_name }}/.emacs.d
+    dest: /home/{{ remote_user }}/.emacs.d
   become: false
 
 - name: write custom bash config
-  template: src=bashrc.j2 dest=/home/{{ user_name }}/.bashrc owner={{ user_name }}
+  template: src=bashrc.j2 dest=/home/{{ remote_user }}/.bashrc owner={{ remote_user }}
 
 - name: write custom fish config
-  template: src=fish.conf.j2 dest=/home/{{ user_name }}/.config/fish/config.fish owner={{ user_name }}
+  template: src=fish.conf.j2 dest=/home/{{ remote_user }}/.config/fish/config.fish owner={{ remote_user }}
 
 - name: write custom tmux config
-  template: src=tmux.conf.j2 dest=/home/{{ user_name }}/.tmux.conf owner={{ user_name }}
+  template: src=tmux.conf.j2 dest=/home/{{ remote_user }}/.tmux.conf owner={{ remote_user }}
 
 - name: write custom git config
-  template: src=gitconfig.j2 dest=/home/{{ user_name }}/.gitconfig owner={{ user_name }}
+  template: src=gitconfig.j2 dest=/home/{{ remote_user }}/.gitconfig owner={{ remote_user }}
 
 - name: import lien profile
-  template: src=lein_profiles.j2 dest=/home/{{ user_name }}/.lein/profiles.clj mode=0744 owner={{ user_name }}
+  template: src=lein_profiles.j2 dest=/home/{{ remote_user }}/.lein/profiles.clj mode=0744 owner={{ remote_user }}
 
 - name: import psg
-  template: src=psg dest=/home/{{ user_name }}/bin/psg mode=0755 owner={{ user_name }}
+  template: src=psg dest=/home/{{ remote_user }}/bin/psg mode=0755 owner={{ remote_user }}
 
 - name: Install handy scratch files
   file:
-    path: /home/{{ user_name }}/tmp/scratch.{{ item }}
+    path: /home/{{ remote_user }}/tmp/scratch.{{ item }}
     state: touch
-    owner: "{{ user_name }}"
-    group: "{{ user_name }}"
+    owner: "{{ remote_user }}"
+    group: "{{ remote_user }}"
     mode: "u=rw,g=r,o=r"
   with_items:
     - ex
@@ -119,13 +106,13 @@
 - name: setup ssh login
   lineinfile:
 #    path: /etc/selinux/config
-    dest: /home/{{ user_name }}/.ssh/authorized_keys
+    dest: /home/{{ remote_user }}/.ssh/authorized_keys
     regexp: 'rjspotter@wheatley'
     line: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCduUqawkxXPozz9dQ7CxZVILcbA0WDmcf+WEipriIOqfc1xxRC9u2bn9MTG0apwUX1Hv4L9G3heJfsiijCpZ7qbEAsMYcwOPxIN/ecfLTA1m9KEWSesv6f0BMWaFRtMXpvuJI8fbYlLkqmHYVkczqaEVgjsuoUbWLa6644yoYDwvrxlTVRfDrZe1MvUxjHQXkpGEr/F70ltHqzke8FCr3FmEl209fjMy6Z5Ewisx7zgqiWAzoTPcsqCPGD0KCu9OrdYdr+CWGpbEzh9kVluKJdiAUwqe7OY9g2D9h8lvPXJGhqI7YcBKl8KnaxloLkqPNX9++gkIGo/iZTG/jGQxX3 rjspotter@wheatley
 '
 
 - name: ensure ownage
-  shell: chown -R {{ user_name}} /home/{{ user_name }}
+  shell: chown -R {{ remote_user}} /home/{{ remote_user }}
 
 - name: ensure groupage
-  shell: chgrp -R {{ user_name}} /home/{{ user_name }}
+  shell: chgrp -R {{ remote_user}} /home/{{ remote_user }}
