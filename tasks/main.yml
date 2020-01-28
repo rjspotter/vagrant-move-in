@@ -36,7 +36,7 @@
 
 - name: Install base packages
   apt:
-    name: [libgstreamer1.0-dev, libncurses5-dev, libgnutls28-dev, tmux, texinfo, build-essential, automake, autoconf, git, meld, fish]
+    name: [libgstreamer1.0-dev, libncurses5-dev, libgnutls28-dev, tmux, texinfo, build-essential, automake, autoconf, git, meld, fish, python3-pip]
     state: latest
     update_cache: yes
     install_recommends: yes
@@ -46,6 +46,11 @@
   apt:
     deb: https://github.com/BurntSushi/ripgrep/releases/download/0.9.0/ripgrep_0.9.0_amd64.deb
   become: true
+
+- name: install format-sql
+  pip:
+    name: format-sql
+    executable: pip-3.3
 
 - name: get emacs 26 source
   git:
@@ -75,6 +80,9 @@
 
 - name: write custom git config
   template: src=gitconfig.j2 dest=/home/{{ remote_user }}/.gitconfig owner={{ remote_user }}
+
+- name: write custom git message
+  template: src=gitmessage.j2 dest=/home/{{ remote_user }}/.gitmessage owner={{ remote_user }}
 
 - name: import lien profile
   template: src=lein_profiles.j2 dest=/home/{{ remote_user }}/.lein/profiles.clj mode=0744 owner={{ remote_user }}
