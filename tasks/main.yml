@@ -17,23 +17,6 @@
     - Downloads
   become: false
 
-- apt_key:
-    url: https://deb.opera.com/archive.key
-    state: present
-  become: true
-
-- apt_repository:
-    repo: deb https://deb.opera.com/opera-stable/ stable non-free
-    state: present
-    update_cache: yes
-  become: true
-
-- apt_repository:
-    repo: deb http://archive.canonical.com/ubuntu bionic partner
-    state: present
-    update_cache: yes
-  become: true
-
 - name: Install base packages
   apt:
     name: [libgstreamer1.0-dev, libncurses5-dev, libgnutls28-dev, tmux, texinfo, build-essential, automake, autoconf, git, meld, fish, python3-pip]
@@ -44,12 +27,19 @@
 
 - name: Install ripgrep
   apt:
-    deb: https://github.com/BurntSushi/ripgrep/releases/download/0.9.0/ripgrep_0.9.0_amd64.deb
+    deb: https://github.com/BurntSushi/ripgrep/releases/download/12.0.1/ripgrep_12.0.1_amd64.deb
   become: true
 
-- name: install format-sql
+- name: Install vivaldi
+  apt:
+    deb: https://downloads.vivaldi.com/stable/vivaldi-stable_2.11.1811.49-1_amd64.deb
+  become: true
+
+# - name: install pgFormatter # TODO
+
+- name: install pips
   pip:
-    name: format-sql
+    name: [virtualenv, jupyterlab, jupyter-console, fastparquet, python-snappy]
     executable: pip-3.3
 
 - name: get emacs 26 source
@@ -109,6 +99,8 @@
     - scala
     - css
     - sass
+    - sql
+    - py
   become: false
 
 - name: setup ssh login
